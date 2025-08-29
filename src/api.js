@@ -2,7 +2,7 @@ const BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
 export async function fetchDoctors() {
   try {
-    const response = await fetch(`${BASE_URL}/api/doctor/list`);
+    const response = await fetch(`${VITE_BACKEND_URL}/api/doctor/list`);
     const data = await response.json();
     return data;
   } catch (error) {
