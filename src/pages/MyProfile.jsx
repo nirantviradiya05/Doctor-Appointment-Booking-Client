@@ -1,17 +1,16 @@
 import React, { useContext, useState } from 'react'
 import { AppContext } from '../context/AppContext'
 import { assets } from '../assets/assets'
-import axios from 'axios'
+import axios from '../api'  // <-- use configured axios instance
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const MyProfile = () => {
-  const { userData, setUserData, token, backendUrl, loadUserProfileData } = useContext(AppContext)
+  const { userData, setUserData, token, loadUserProfileData } = useContext(AppContext)
 
-  const [isEdite, setIsEdit] = useState(false)
+  const [isEdit, setIsEdit] = useState(false)
   const [image, setImage] = useState(false)
 
-  // ✅ Utility: Ensure date is always yyyy-MM-dd
   const formatDateForInput = (dateString) => {
     if (!dateString) return "";
     const d = new Date(dateString);
@@ -32,7 +31,7 @@ const MyProfile = () => {
       image && formData.append('image', image)
 
       const { data } = await axios.post(
-        backendUrl + '/api/user/update-profile',
+        '/api/user/update-profile',
         formData,
         { headers: { token } }
       )
@@ -55,7 +54,7 @@ const MyProfile = () => {
     <div className='max-w-lg flex flex-col gap-2 text-sm'>
 
       {
-        isEdite ? (
+        isEdit ? (
           <label htmlFor="image">
             <div className='inline-block relative cursor-pointer'>
               <img
@@ -63,11 +62,13 @@ const MyProfile = () => {
                 src={image ? URL.createObjectURL(image) : (userData.image || assets.default_avatar)}
                 alt="profile"
               />
-              <img
-                className='w-10 absolute bottom-12 right-12'
-                src={image ? "" : assets.upload_icon}
-                alt="upload icon"
-              />
+              {!image && (
+                <img
+                  className='w-10 absolute bottom-12 right-12'
+                  src={assets.upload_icon}
+                  alt="upload icon"
+                />
+              )}
             </div>
             <input onChange={(e) => setImage(e.target.files[0])} type="file" id="image" hidden />
           </label>
@@ -81,7 +82,7 @@ const MyProfile = () => {
       }
 
       {
-        isEdite
+        isEdit
           ? <input
               className='bg-gray-50 text-3xl font-medium max-w-60 mt-4'
               value={userData.name}
@@ -102,7 +103,7 @@ const MyProfile = () => {
 
           <p className='font-medium'>Phone:</p>
           {
-            isEdite
+            isEdit
               ? <input
                   className='bg-gray-100 max-w-52'
                   value={userData.phone}
@@ -114,7 +115,7 @@ const MyProfile = () => {
 
           <p className='font-medium'>Address:</p>
           {
-            isEdite
+            isEdit
               ? <p>
                   <input
                     className='bg-gray-50'
@@ -143,7 +144,7 @@ const MyProfile = () => {
         <div className='grid grid-cols-[1fr_3fr] gap-y-2.5 mt-3 text-neutral-700'>
           <p className='font-medium'>Gender:</p>
           {
-            isEdite
+            isEdit
               ? <select
                   className='max-w-20 bg-gray-100'
                   onChange={(e) => setUserData(prev => ({ ...prev, gender: e.target.value }))}
@@ -158,7 +159,7 @@ const MyProfile = () => {
 
           <p className='font-medium'>Birthday:</p>
           {
-            isEdite
+            isEdit
               ? <input
                   className='max-w-28 bg-gray-100'
                   type="date"
@@ -173,7 +174,7 @@ const MyProfile = () => {
       </div>
 
       <div className='mt-10'>
-        {isEdite
+        {isEdit
           ? <button
               className='border border-indigo-500 px-8 py-2 rounded-full hover:bg-indigo-500 hover:text-white transition-all'
               onClick={updateUserProfileData}

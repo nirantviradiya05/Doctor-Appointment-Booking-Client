@@ -5,11 +5,11 @@ import { assets } from '../assets/assets';
 import RelatedDoctors from '../components/RelatedDoctors';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import axios from 'axios';
+import axios from "../api";  // using axios with BASE_URL
 
 const Appointment = () => {
   const { docId } = useParams();
-  const { doctors, currencySymbol, backendUrl, token, getDoctorsData, userData } = useContext(AppContext);
+  const { doctors, currencySymbol, token, getDoctorsData, userData } = useContext(AppContext);
   const daysOfWeek = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
   const navigate = useNavigate();
 
@@ -36,21 +36,18 @@ const Appointment = () => {
       const endTime = new Date(currentDate);
       endTime.setHours(21, 0, 0, 0); // 9 PM cutoff
 
-      // Start time
       if (i === 0) {
-        // today: next 30-min block, but not before 10:00
         const start = new Date(currentDate);
         const hour = Math.max(10, now.getHours() + (now.getMinutes() > 0 ? 1 : 0));
         start.setHours(hour, now.getMinutes() > 30 ? 30 : 0, 0, 0);
         currentDate.setTime(start.getTime());
       } else {
-        currentDate.setHours(10, 0, 0, 0); // other days start 10:00
+        currentDate.setHours(10, 0, 0, 0); // Start from 10 AM
       }
 
       const timeSlots = [];
       while (currentDate < endTime) {
         const formattedTime = currentDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
         const day = currentDate.getDate();
         const month = currentDate.getMonth() + 1;
         const year = currentDate.getFullYear();
@@ -97,9 +94,9 @@ const Appointment = () => {
       const slotDate = `${day}_${month}_${year}`;
 
       const { data } = await axios.post(
-        `${backendUrl}/api/user/book-appointment`,
+        `/api/user/book-appointment`,
         {
-          userId: userData._id,   // backend also reads req.userId from token (safe)
+          userId: userData._id,
           docId: docInfo._id,
           slotDate,
           slotTime

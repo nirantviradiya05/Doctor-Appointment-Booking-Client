@@ -1,12 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
 import { AppContext } from '../context/AppContext';
-import axios from 'axios';
+import axios from '../api'; // ✅ use local axios with BASE_URL
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
-  const { backendUrl, token, setToken } = useContext(AppContext);
+  const { token, setToken } = useContext(AppContext); // ✅ removed backendUrl
   const navigate = useNavigate();
 
   const [state, setState] = useState('Sign Up');
@@ -20,7 +20,7 @@ const Login = () => {
 
     try {
       if (state === 'Sign Up') {
-        const { data } = await axios.post(`${backendUrl}/api/user/register`, {
+        const { data } = await axios.post(`/api/user/register`, {
           name,
           password,
           email,
@@ -36,7 +36,7 @@ const Login = () => {
           toast.error(data.message);
         }
       } else {
-        const { data } = await axios.post(`${backendUrl}/api/user/login`, {
+        const { data } = await axios.post(`/api/user/login`, {
           password,
           email,
         });
