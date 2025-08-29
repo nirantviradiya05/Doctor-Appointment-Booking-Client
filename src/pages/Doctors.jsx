@@ -11,7 +11,6 @@ const Doctors = () => {
   const { doctors } = useContext(AppContext);
 
   const applyFilter = () => {
-    // Only take available doctors
     let availableDoctors = doctors.filter((doc) => doc.available);
 
     if (speciality) {
@@ -42,89 +41,33 @@ const Doctors = () => {
             showFilter ? 'flex' : 'hidden sm:flex'
           }`}
         >
-          <p
-            onClick={() =>
-              speciality === 'Gynecologist'
-                ? navigate('/doctors')
-                : navigate('/doctors/Gynecologist')
-            }
-            className={`w-[94vw] sm:w-auto pl-3 py-1.5 pr-16 border rounded cursor-pointer ${
-              speciality === 'Gynecologist' ? 'bg-indigo-100 text-black' : ''
-            }`}
-          >
-            Gynecologist
-          </p>
-          <p
-            onClick={() =>
-              speciality === 'General physician'
-                ? navigate('/doctors')
-                : navigate('/doctors/General physician')
-            }
-            className={`w-[94vw] sm:w-auto pl-3 py-1.5 pr-16 border rounded cursor-pointer ${
-              speciality === 'General physician' ? 'bg-indigo-100 text-black' : ''
-            }`}
-          >
-            General physician
-          </p>
-          <p
-            onClick={() =>
-              speciality === 'Dermatologist'
-                ? navigate('/doctors')
-                : navigate('/doctors/Dermatologist')
-            }
-            className={`w-[94vw] sm:w-auto pl-3 py-1.5 pr-16 border rounded cursor-pointer ${
-              speciality === 'Dermatologist' ? 'bg-indigo-100 text-black' : ''
-            }`}
-          >
-            Dermatologist
-          </p>
-          <p
-            onClick={() =>
-              speciality === 'Pediatricians'
-                ? navigate('/doctors')
-                : navigate('/doctors/Pediatricians')
-            }
-            className={`w-[94vw] sm:w-auto pl-3 py-1.5 pr-16 border rounded cursor-pointer ${
-              speciality === 'Pediatricians' ? 'bg-indigo-100 text-black' : ''
-            }`}
-          >
-            Pediatricians
-          </p>
-          <p
-            onClick={() =>
-              speciality === 'Neurologist'
-                ? navigate('/doctors')
-                : navigate('/doctors/Neurologist')
-            }
-            className={`w-[94vw] sm:w-auto pl-3 py-1.5 pr-16 border rounded cursor-pointer ${
-              speciality === 'Neurologist' ? 'bg-indigo-100 text-black' : ''
-            }`}
-          >
-            Neurologist
-          </p>
-          <p
-            onClick={() =>
-              speciality === 'Gastroenterologist'
-                ? navigate('/doctors')
-                : navigate('/doctors/Gastroenterologist')
-            }
-            className={`w-[94vw] sm:w-auto pl-3 py-1.5 pr-16 border rounded cursor-pointer ${
-              speciality === 'Gastroenterologist' ? 'bg-indigo-100 text-black' : ''
-            }`}
-          >
-            Gastroenterologist
-          </p>
+          {/* Filter buttons */}
+          {['Gynecologist', 'General physician', 'Dermatologist', 'Pediatricians', 'Neurologist', 'Gastroenterologist'].map((spec) => (
+            <p
+              key={spec}
+              onClick={() =>
+                speciality === spec
+                  ? navigate('/doctors')
+                  : navigate(`/doctors/${spec}`)
+              }
+              className={`w-[94vw] sm:w-auto pl-3 py-1.5 pr-16 border rounded cursor-pointer ${
+                speciality === spec ? 'bg-indigo-100 text-black' : ''
+              }`}
+            >
+              {spec}
+            </p>
+          ))}
         </div>
 
         {/* Doctors List */}
         <div className='w-full grid grid-cols-auto gap-4 gap-y-6'>
           {filterDoc.map((item, index) => (
             <div
+              key={index}
               onClick={() => navigate(`/appointment/${item._id}`)}
               className='border border-black-200 rounded-xl overflow-hidden cursor-pointer hover:translate-y-[-10px] transition-all duration'
-              key={index}
             >
-              <img className='bg-blue-50' src={item.image} alt='' />
+              <img className='bg-blue-50' src={item.image} alt={item.name} />
               <div className='p-4'>
                 {item.available && (
                   <div className='flex items-center gap-2 text-sm text-green-500'>
