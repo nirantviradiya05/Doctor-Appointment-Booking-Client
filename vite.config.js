@@ -3,14 +3,12 @@ import react from '@vitejs/plugin-react'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  // Base public path when served in production.
-  // For GitHub Pages, set it to your repo name (including slashes).
-  base: '/Doctor-Appointment-Booking-Client/',
-
+  base: '/Doctor-Appointment-Booking-Client/', // Base path for GitHub Pages repo subfolder
   plugins: [react()],
-
-  // Development server config (optional)
   server: {
-    port: 5173, // Specify your dev server port if needed
+    port: 5173,  // Optional: your local dev server port
+  },
+  build: {
+    outDir: 'dist', // Default output folder, you can customize if needed
   },
 })
